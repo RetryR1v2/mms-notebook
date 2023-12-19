@@ -1,0 +1,4 @@
+-- mms-notebook
+
+    ['notebook']  = {['name'] = 'notebook',  ['label'] = 'Notizbuch',  ['weight'] = 0,  ['type'] = 'item', ['image'] = 'notebook.png',  ['unique'] = false, ['useable'] = true,  ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'Notizbuch'},
+    

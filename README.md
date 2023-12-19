@@ -1,9 +1,12 @@
 # mms-notebook
 
-
+ - Write a Note to DB 
+ - Get Note from DB
+ - Delete Note
+ - Just a Simple Notebook
 
 # Chnagelog
-- NOT READY YET
+- Initial Release Version 1.1.1
 
 # installation 
 

@@ -50,21 +50,32 @@ end)
 
 RegisterServerEvent('mms-notebook:server:geteintrag', function(citizenid)
     local src = source
-    MySQL.query('SELECT `id`, `titel`, `text` FROM `mms_notebook` WHERE `citizenid` = ?', {citizenid}, function(result)
-        if result and #result ~= nil then
-            for i = 1, #result do
-                local row = result[i]
-                tableid = {row.id}
-                tabletitel = {row.titel}
-                tabletext = {row.text}
+            exports.oxmysql:execute('SELECT * FROM mms_notebook WHERE citizenid = ?', {citizenid}, function(mails)
+                if mails and #mails > 0 then
+                    local eintraege = {}
+
+                    for _, mail in ipairs(mails) do
+                        table.insert(eintraege, mail)
+                        
+                    end
+                    TriggerClientEvent('mms-notebook:client:createbuttonspage3', src, eintraege)
+                else
+            RSGCore.Functions.Notify(src, 'Du hast keine Einträge!', 'error', 5000)
             end
-            TriggerClientEvent('mms-notebook:client:youreintrag', src, tableid, tabletitel, tabletext)
-            Citizen.Wait(300)
-            TriggerClientEvent('mms-notebook:client:openpage3',src)
+        end)
+end)
+RegisterServerEvent('mms-notebook:server:deleteeintrag', function(id)
+    local src = source
+    exports.oxmysql:execute('SELECT * FROM mms_notebook WHERE id = ?', {id}, function(result)
+        if result ~= nil then
+            MySQL.execute('DELETE FROM mms_notebook WHERE id = ?', { id }, function(result)
+            end)
+            RSGCore.Functions.Notify(src, 'Eintrag Gelöscht!', 'error', 5000)
         else
-            RSGCore.Functions.Notify(src, 'Du hast keine Einträge!', 'error', 3000)
+            RSGCore.Functions.Notify(src, 'Eintrag Existiert nicht!', 'error', 5000)
         end
-    end)
+    
+        end)
 end)
 
 

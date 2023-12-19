@@ -1,6 +1,6 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 local FeatherMenu =  exports['feather-menu'].initiate()
-
+local eintragabgerufen = 0
 
 RegisterNetEvent('mms-notebook:client:opennotebook',function()
     Notebook:Open({
@@ -50,8 +50,14 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
         style = {
         },
     }, function()
+        if eintragabgerufen == 1 then
+            NotebookPage3:UnRegister()
         TriggerEvent('mms-notebook:client:geteintrag')
-        --NotebookPage3:RouteTo()
+        eintragabgerufen = 1
+        else
+            TriggerEvent('mms-notebook:client:geteintrag')
+            eintragabgerufen = 1
+        end
     end)
     NotebookPage1:RegisterElement('button', {
         label = "Notizbuch Schließen",
@@ -112,8 +118,9 @@ end)
         style = {
         },
     }, function()
-        TriggerEvent('mms-notebook:client:saveeintrag',inputTitel,inputText)
-    end)
+            TriggerEvent('mms-notebook:client:saveeintrag',inputTitel,inputText)
+            
+end)
     NotebookPage2:RegisterElement('button', {
         label = "Zurück zum Notizbuch",
         style = {
@@ -147,7 +154,7 @@ RegisterNetEvent('mms-notebook:client:saveeintrag',function(inputTitel,inputText
         local citizenid = PlayerData.citizenid
         TriggerServerEvent('mms-notebook:server:saveeintrag', citizenid,inputTitel,inputText)
         RSGCore.Functions.Notify('Eintrag Gespeichert!', 'success')
-        Notebook:Close({ })
+        NotebookPage1:RouteTo()
     else
         RSGCore.Functions.Notify('Du musst deine Eingaben mit Enter bestätigen', 'error')
     end
@@ -159,17 +166,12 @@ RegisterNetEvent('mms-notebook:client:geteintrag',function()
     TriggerServerEvent('mms-notebook:server:geteintrag', citizenid)
 end)
 
-RegisterNetEvent('mms-notebook:client:youreintrag',function(id,titel,text)
-    
-    
-    print(id)
-    print(titel)
-    print(text)
-    
-      
-    
-     ------ Seite 3 Deine Einträge
 
+
+
+
+RegisterNetEvent('mms-notebook:client:createbuttonspage3')
+AddEventHandler('mms-notebook:client:createbuttonspage3', function(eintraege)
     NotebookPage3 = Notebook:RegisterPage('first:page3')
     NotebookPage3:RegisterElement('header', {
         value = 'Deine Einträge',
@@ -180,17 +182,50 @@ RegisterNetEvent('mms-notebook:client:youreintrag',function(id,titel,text)
         slot = "header",
         style = {}
     })
-
-    for k ,v  in pairs(id,titel) do    ----- Should Create More than 1 Button but overrides them 
-    NotebookPage3:RegisterElement('button', {     --- But Creates only 1 Button then Override it with 2 should id 1 id 2 id 3 but overrides the button id1 with id2 
-        label = 'ID:  ' ..id[k] .. ' Titel:  ' .. titel[k],
+    for _, mail in ipairs(eintraege) do
+        local buttonLabel = 'ID:  '.. mail.id ..' Titel:  '.. mail.titel
+        pagelabel = mail.titel
+        local textlabel = mail.text
+        NotebookPage3:RegisterElement('button', {
+            label = buttonLabel,
+            style = {
+                -- Button styling
+            }
+        }, function()
+            Text:update({
+                value = mail.text,
+                style = {}
+            })
+        end)
+    end
+    Text = NotebookPage3:RegisterElement('textdisplay', {
+        value = "",
+        style = {}
+    })
+    local inputid = ''
+    NotebookPage3:RegisterElement('input', {
+    label = "ID!",
+    placeholder = "ID",
+    persist = false,
+    style = {
+    }
+    }, function(data)
+        inputid = data.value
+    end)
+    NotebookPage3:RegisterElement('button', {
+        label = "Eintrag Löschen!",
         style = {
         },
     }, function()
-        --TriggerEvent('mms-notebook:client'..v,incomingtitel,incomingtext)
+        if inputid ~= nil then
+        local id = tonumber(inputid)
+        TriggerEvent('mms-notebook:client:deleteeintrag',id)
+        Citizen.Wait(500)
+        NotebookPage1:RouteTo()
+        else
+            RSGCore.Functions.Notify('Du musst deine Eingaben mit Enter bestätigen', 'error')
+        end
     end)
-
-    end
     NotebookPage3:RegisterElement('button', {
         label = "Zurück zum Notizbuch",
         style = {
@@ -206,6 +241,7 @@ RegisterNetEvent('mms-notebook:client:youreintrag',function(id,titel,text)
         Notebook:Close({
         })
     end)
+    NotebookPage3:RouteTo()
     NotebookPage3:RegisterElement('subheader', {
         value = "Deine Einträge",
         slot = "footer",
@@ -215,11 +251,15 @@ RegisterNetEvent('mms-notebook:client:youreintrag',function(id,titel,text)
         slot = "footer",
         style = {}
     })
-
 end)
 
-RegisterNetEvent('mms-notebook:client:openpage3',function()
-    NotebookPage3:RouteTo()
+RegisterNetEvent('mms-notebook:client:GetTextFromDB',function ()
+    local PlayerData = RSGCore.Functions.GetPlayerData()
+    local citizenid = PlayerData.citizenid
+    print('geht')
+    TriggerServerEvent('mms-notebook:server:gettext',citizenid)
 end)
 
-
+RegisterNetEvent('mms-notebook:client:deleteeintrag',function(id)
+    TriggerServerEvent('mms-notebook:server:deleteeintrag', id)
+end)
