@@ -3,6 +3,9 @@ local FeatherMenu =  exports['feather-menu'].initiate()
 local eintragabgerufen = 0
 
 RegisterNetEvent('mms-notebook:client:opennotebook',function()
+    local ped = PlayerPedId()
+    Citizen.InvokeNative(0xB31A277C1AC7B7FF, ped, 0, 0, -1169051375, 1, 1, 0, 0)
+    --Citizen.InvokeNative(0xB31A277C1AC7B7FF, ped, 0, 0, -919436740, 1, 1, 0, 0)
     Notebook:Open({
         startupPage = NotebookPage1,
     })
@@ -15,10 +18,13 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
         top = '50%',
         left = '50%',
         ['720width'] = '500px',
-        ['1080width'] = '600px',
+        ['1080width'] = '700px',
         ['2kwidth'] = '700px',
-        ['4kwidth'] = '900px',
+        ['4kwidth'] = '8000px',
         style = {
+            ['border'] = '5px solid orange',
+            -- ['background-image'] = 'none',
+            ['background-color'] = '#FF8C00'
         },
         contentslot = {
             style = {
@@ -32,15 +38,22 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     NotebookPage1:RegisterElement('header', {
         value = 'Notizbuch',
         slot = "header",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage1:RegisterElement('line', {
         slot = "header",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage1:RegisterElement('button', {
         label = "Eintrag schreiben",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         NotebookPage2:RouteTo()
@@ -48,13 +61,15 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     NotebookPage1:RegisterElement('button', {
         label = "Deine Einträge",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
-        if eintragabgerufen == 1 then
-            NotebookPage3:UnRegister()
+        if eintragabgerufen == 0 then
         TriggerEvent('mms-notebook:client:geteintrag')
-        eintragabgerufen = 1
         else
+            NotebookPage3:UnRegister()
             TriggerEvent('mms-notebook:client:geteintrag')
             eintragabgerufen = 1
         end
@@ -62,6 +77,9 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     NotebookPage1:RegisterElement('button', {
         label = "Notizbuch Schließen",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         Notebook:Close({ 
@@ -70,11 +88,15 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     NotebookPage1:RegisterElement('subheader', {
         value = "Notizbuch",
         slot = "footer",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage1:RegisterElement('line', {
         slot = "footer",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
 
 
@@ -84,11 +106,15 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     NotebookPage2:RegisterElement('header', {
         value = 'Eintrag Schreiben',
         slot = "header",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage2:RegisterElement('line', {
         slot = "header",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     local inputTitel = ''
     NotebookPage2:RegisterElement('input', {
@@ -96,6 +122,9 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     placeholder = "Titel!",
     persist = false,
     style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
     }
     }, function(data)
         inputTitel = data.value
@@ -108,6 +137,9 @@ Citizen.CreateThread(function()  --- RegisterFeather Menu
     resize = false,
     persist = false,
     style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
     }
     }, function(data)
     
@@ -116,6 +148,9 @@ end)
     NotebookPage2:RegisterElement('button', {
         label = "Eintrag Speichern",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
             TriggerEvent('mms-notebook:client:saveeintrag',inputTitel,inputText)
@@ -124,6 +159,9 @@ end)
     NotebookPage2:RegisterElement('button', {
         label = "Zurück zum Notizbuch",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         NotebookPage1:RouteTo()
@@ -131,6 +169,9 @@ end)
     NotebookPage2:RegisterElement('button', {
         label = "Notizbuch Schließen",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         Notebook:Close({
@@ -139,11 +180,15 @@ end)
     NotebookPage2:RegisterElement('subheader', {
         value = "Eintrag Schreiben",
         slot = "footer",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage2:RegisterElement('line', {
         slot = "footer",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
 
 end)
@@ -172,35 +217,45 @@ end)
 
 RegisterNetEvent('mms-notebook:client:createbuttonspage3')
 AddEventHandler('mms-notebook:client:createbuttonspage3', function(eintraege)
+    eintragabgerufen = 1
     NotebookPage3 = Notebook:RegisterPage('first:page3')
     NotebookPage3:RegisterElement('header', {
         value = 'Deine Einträge',
         slot = "header",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage3:RegisterElement('line', {
         slot = "header",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     for _, mail in ipairs(eintraege) do
         local buttonLabel = 'ID:  '.. mail.id ..' Titel:  '.. mail.titel
         pagelabel = mail.titel
-        local textlabel = mail.text
         NotebookPage3:RegisterElement('button', {
             label = buttonLabel,
             style = {
-                -- Button styling
+                ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
             }
         }, function()
             Text:update({
                 value = mail.text,
-                style = {}
+                style = {
+                    ['color'] = 'orange',
+                }
             })
         end)
     end
     Text = NotebookPage3:RegisterElement('textdisplay', {
         value = "",
-        style = {}
+        style = {
+            ['color'] = 'orange',
+        }
     })
     local inputid = ''
     NotebookPage3:RegisterElement('input', {
@@ -208,13 +263,34 @@ AddEventHandler('mms-notebook:client:createbuttonspage3', function(eintraege)
     placeholder = "ID",
     persist = false,
     style = {
+        ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
     }
     }, function(data)
         inputid = data.value
     end)
     NotebookPage3:RegisterElement('button', {
+        label = "Eintrag Weitergeben!",
+        style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
+        },
+    }, function()
+        if inputid ~= nil then
+            local id = tonumber(inputid)
+            TriggerEvent('mms-notebook:client:giveeintrag',id)
+        else
+            RSGCore.Functions.Notify('Du musst deine Eingaben mit Enter bestätigen', 'error')
+        end
+    end)
+    NotebookPage3:RegisterElement('button', {
         label = "Eintrag Löschen!",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         if inputid ~= nil then
@@ -229,6 +305,9 @@ AddEventHandler('mms-notebook:client:createbuttonspage3', function(eintraege)
     NotebookPage3:RegisterElement('button', {
         label = "Zurück zum Notizbuch",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         NotebookPage1:RouteTo()
@@ -236,6 +315,9 @@ AddEventHandler('mms-notebook:client:createbuttonspage3', function(eintraege)
     NotebookPage3:RegisterElement('button', {
         label = "Notizbuch Schließen",
         style = {
+            ['background-color'] = '#FF8C00',
+        ['color'] = 'orange',
+        ['border-radius'] = '6px'
         },
     }, function()
         Notebook:Close({
@@ -245,19 +327,33 @@ AddEventHandler('mms-notebook:client:createbuttonspage3', function(eintraege)
     NotebookPage3:RegisterElement('subheader', {
         value = "Deine Einträge",
         slot = "footer",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
     NotebookPage3:RegisterElement('line', {
         slot = "footer",
-        style = {}
+        style = {
+        ['color'] = 'orange',
+        }
     })
 end)
 
 RegisterNetEvent('mms-notebook:client:GetTextFromDB',function ()
     local PlayerData = RSGCore.Functions.GetPlayerData()
     local citizenid = PlayerData.citizenid
-    print('geht')
     TriggerServerEvent('mms-notebook:server:gettext',citizenid)
+end)
+
+RegisterNetEvent('mms-notebook:client:giveeintrag')
+    AddEventHandler('mms-notebook:client:giveeintrag', function(id)
+    local player, distance = RSGCore.Functions.GetClosestPlayer(GetEntityCoords(PlayerPedId()))
+        if  player ~= -1 and distance < 4 then
+            local playerId = GetPlayerServerId(player)
+            TriggerServerEvent('mms-notebook:server:giveeintrag' ,id , playerId)
+        else
+            RSGCore.Functions.Notify('Niemand in der Nähe zum Weitergeben', 'error')
+        end
 end)
 
 RegisterNetEvent('mms-notebook:client:deleteeintrag',function(id)

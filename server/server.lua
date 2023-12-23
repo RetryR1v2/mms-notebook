@@ -47,6 +47,32 @@ MySQL.insert('INSERT INTO `mms_notebook` (citizenid, titel, text) VALUES (?, ?, 
    -- print(id)
     end)
 end)
+RegisterServerEvent('mms-notebook:server:giveeintrag', function(id , playerId)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(playerId)
+    local citizenid = Player.PlayerData.citizenid
+    local titel = nil
+    local text = nil
+    MySQL.query('SELECT * FROM `mms_notebook` WHERE `id` = ? ', {id}, function(result)
+        if result and #result > 0 then
+            for i = 1, #result do
+                local row = result[i]
+                titel = row.titel
+                text = row.text
+            end
+            MySQL.insert('INSERT INTO `mms_notebook` (citizenid, titel, text) VALUES (?, ?, ?)', {
+                citizenid, titel, text
+                }, function(id)
+               -- print(id)
+            end)
+            RSGCore.Functions.Notify(src, 'Eintrag mit Id ' .. id .. ' Weitergegeben!', 'success', 5000)
+            RSGCore.Functions.Notify(Player, 'Du den Eintrag Bekommen!', 'success', 5000)
+        else
+            RSGCore.Functions.Notify(src, 'Eintrag mit Id ! ' .. id .. ' nicht Gefunden!', 'error', 5000)
+        end
+    end)
+end)
+
 
 RegisterServerEvent('mms-notebook:server:geteintrag', function(citizenid)
     local src = source

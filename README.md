@@ -7,6 +7,9 @@
 
 # Chnagelog
 - Initial Release Version 1.1.1
+- Version 1.1.2
+- Added Function to Give your Entry to Another Player thats Near to you like give item.
+- Added Animation if you open Notebook
 
 # installation 
 
@@ -21,5 +24,5 @@
 - oxmysql
 
 # CREDITS
-
+- Discord markusmueller 
 - https://github.com/RetryR1v2 
