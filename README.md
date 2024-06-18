@@ -22,5 +22,5 @@
 - oxmysql
 
 # CREDITS
-- Discord markusmueller 
+- Discord https://discord.gg/Hua9DFXZYN
 - https://github.com/RetryR1v2 
