@@ -1,115 +1,80 @@
 local VORPcore = exports.vorp_core:GetCore()
 
------------------------------------------------------------------------
--- version checker
------------------------------------------------------------------------
-local function versionCheckPrint(_type, log)
-    local color = _type == 'success' and '^2' or '^1'
+-- Register Notebook Item
 
-    print(('^5['..GetCurrentResourceName()..']%s %s^7'):format(color, log))
-end
-
-local function CheckVersion()
-    PerformHttpRequest('https://raw.githubusercontent.com/RetryR1v2/mms-notebook/main/version.txt', function(err, text, headers)
-        local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
-
-        if not text then 
-            versionCheckPrint('error', 'Currently unable to run a version check.')
-            return 
-        end
-
-      
-        if text == currentVersion then
-            versionCheckPrint('success', 'You are running the latest version.')
-        else
-            versionCheckPrint('error', ('Current Version: %s'):format(currentVersion))
-            versionCheckPrint('success', ('Latest Version: %s'):format(text))
-            versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(text))
-        end
-    end)
-end
-
-exports.vorp_inventory:registerUsableItem('notebook', function(data)
+exports.vorp_inventory:registerUsableItem(Config.NotebookItem, function(data)
     local source = data.source
     TriggerClientEvent('mms-notebook:client:opennotebook',source)
 end)
 
-
+-- Create New Entry in Database
 
 RegisterServerEvent('mms-notebook:server:saveeintrag', function(inputTitel,inputText)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
     local identifier = Character.identifier
-MySQL.insert('INSERT INTO `mms_notebook` (identifier, titel, text) VALUES (?, ?, ?)', {
-    identifier, inputTitel, inputText
-    }, function(id)
-   -- print(id)
-    end)
+    local charIdent = Character.charIdentifier
+    local Name = Character.firstname .. ' ' .. Character.lastname
+    MySQL.insert('INSERT INTO `mms_notebook` (identifier,charidentifier, creator, titel, text) VALUES (?, ?, ?, ?, ?)',
+    {identifier, charIdent, Name, inputTitel, inputText}, function() end)
 end)
 
-RegisterServerEvent('mms-notebook:server:giveeintrag', function(id , serverId)
-    local src = source
-    local titel = nil
-    local text = nil
-    local reciver = serverId
-    local ClosestCharacter = VORPcore.getUser(serverId).getUsedCharacter
-    local Closestidentifier = ClosestCharacter.identifier
-    MySQL.query('SELECT * FROM `mms_notebook` WHERE `id` = ? ', {id}, function(result)
-        if result and #result > 0 then
-            for i = 1, #result do
-                local row = result[i]
-                titel = row.titel
-                text = row.text
-            end
-            MySQL.insert('INSERT INTO `mms_notebook` (identifier, titel, text) VALUES (?, ?, ?)', {
-                Closestidentifier, titel, text
-                }, function(id)
-               -- print(id)
-            end)
-            VORPcore.NotifyTip(src, 'Notiz Weitergegeben!',  5000)
-            VORPcore.NotifyTip(reciver, 'Dir wurde eine Notiz zugesteckt!',  5000)
-        else
-            VORPcore.NotifyTip(src, 'Eintrag mit Id ! ' .. id .. ' nicht Gefunden!',  5000)
-        end
-    end)
-end)
+-- Get Entrys from DB
 
-
-RegisterServerEvent('mms-notebook:server:geteintrag', function()
+RegisterServerEvent('mms-notebook:server:GetEntrys', function()
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter
-    local identifier = Character.identifier
-            exports.oxmysql:execute('SELECT * FROM mms_notebook WHERE identifier = ?', {identifier}, function(mails)
-                if mails and #mails > 0 then
-                    local eintraege = {}
-
-                    for _, mail in ipairs(mails) do
-                        table.insert(eintraege, mail)
-                        
-                    end
-                    TriggerClientEvent('mms-notebook:client:createbuttonspage3', src, eintraege)
-                else
-                    VORPcore.NotifyTip(src, 'Du hast keine Einträge!',  5000)
-            end
-        end)
+    local charIdent = Character.charIdentifier
+    local YourEntrys = MySQL.query.await("SELECT * FROM mms_notebook WHERE charidentifier=@charidentifier", { ["charidentifier"] = charIdent})
+    if #YourEntrys > 0 then
+        TriggerClientEvent('mms-notebook:client:ReciveEntrys', src, YourEntrys)
+    else
+        VORPcore.NotifyTip(src, 'Du hast keine Einträge!',  5000)
+    end
 end)
-RegisterServerEvent('mms-notebook:server:deleteeintrag', function(id)
+
+-- Edit Entry
+
+RegisterServerEvent('mms-notebook:server:EditEntry', function(CurrentEntry , inputText)
+    MySQL.update('UPDATE `mms_notebook` SET text = ?  WHERE id = ?',{inputText, CurrentEntry.id})
+end)
+
+-- Delete Entry
+
+RegisterServerEvent('mms-notebook:server:DeleteEntry', function(CurrentEntry)
     local src = source
-    exports.oxmysql:execute('SELECT * FROM mms_notebook WHERE id = ?', {id}, function(result)
-        if result ~= nil then
-            MySQL.execute('DELETE FROM mms_notebook WHERE id = ?', { id }, function(result)
-            end)
-            VORPcore.NotifyTip(src, 'Eintrag Gelöscht!',  5000)
-        else
-            VORPcore.NotifyTip(src, 'Eintrag Existiert nicht!',  5000)
-        end
-    end)
+    MySQL.execute('DELETE FROM mms_notebook WHERE id = ?', { CurrentEntry.id }, function()end)
+    VORPcore.NotifyTip(src, _U('EntryDeleted'),  5000)
 end)
 
+-- GiveEntry
 
+RegisterServerEvent('mms-notebook:server:GetClosestPlayer',function(CurrentEntry)
+    local src = source
+    local ClosestCharacters = {}
+    local myPed = GetPlayerPed(src)
+    local myCoords = GetEntityCoords(myPed)
+    for h,v in ipairs(GetPlayers()) do
+        local PlayerPed = GetPlayerPed(v)
+        local PlayerCoords = GetEntityCoords(PlayerPed)
+        local Distance = #(myCoords - PlayerCoords)
+        if Distance > 0.3 and Distance < 15 then
+            local CloseCharacter = VORPcore.getUser(v).getUsedCharacter
+            local CloseName = CloseCharacter.firstname .. ' ' .. CloseCharacter.lastname
+            local PlayerData = { Name = CloseName, ServerID = ServerID }
+            table.insert(ClosestCharacters,PlayerData)
+        end
+    end
+    TriggerClientEvent('mms-notebook:client:GiveEntry',src,ClosestCharacters,CurrentEntry)
+end)
 
-
---------------------------------------------------------------------------------------------------
--- start version check
---------------------------------------------------------------------------------------------------
-CheckVersion()
+RegisterServerEvent('mms-notebook:server:GiveEntryToPlayer',function(CurrentEntry,CloseChar)
+    local src = source
+    local CloseCharacter = VORPcore.getUser(CloseChar.ServerID).getUsedCharacter
+    local CloseIdentifier = CloseCharacter.identifier
+    local CharIdent = CloseCharacter.charIdentifier
+    MySQL.insert('INSERT INTO `mms_notebook` (identifier,charidentifier, creator, titel, text) VALUES (?, ?, ?, ?, ?)',
+    {CloseIdentifier, CharIdent, CurrentEntry.creator, CurrentEntry.titel, CurrentEntry.text}, function() end)
+    VORPcore.NotifyTip(src, 'Notiz Weitergegeben!',  5000)
+    VORPcore.NotifyTip(CloseChar.ServerID, 'Dir wurde eine Notiz zugesteckt!',  5000)
+end)

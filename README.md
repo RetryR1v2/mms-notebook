@@ -6,21 +6,30 @@
  - Just a Simple Notebook
 
 # Chnagelog
+
 - Initial Release Version 1.1.1
 - Version 1.1.2
 - Added Function to Give your Entry to Another Player thats Near to you like give item.
 - Added Animation if you open Notebook
+- 1.1.3 
+- Database Chekcs now for Unique Character ID no more Steam ID
+- Complete Rework
+- Better Performance
+- Better Entry Management.
+- You now can Chose which player you want to give the Entry
+- Entry Edit function.
+- Changed Version Check to VORP Basic.
+- RUN NEW SQL or Create Missing Tables
 
 # installation 
 
 - Run the SQL files to add Tables in your DB
 
 # Required
-- VORP CORE
 - Feather Menu by BCC https://github.com/FeatherFramework/feather-menu/releases/latest
-- ox_lib
 - oxmysql
+- VORPCore
 
 # CREDITS
-- Discord https://discord.gg/Hua9DFXZYN
-- https://github.com/RetryR1v2 
+- Discord markusmueller 
+- https://github.com/RetryR1v2/mms-notebook
