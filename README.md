@@ -20,6 +20,8 @@
 - Entry Edit function.
 - Changed Version Check to VORP Basic.
 - RUN NEW SQL or Create Missing Tables
+- Added Full Laguage Support
+- 1.1.4 Fixed Bug Give Entry to Player
 
 # installation 
 

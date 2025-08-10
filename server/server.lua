@@ -58,10 +58,10 @@ RegisterServerEvent('mms-notebook:server:GetClosestPlayer',function(CurrentEntry
         local PlayerPed = GetPlayerPed(v)
         local PlayerCoords = GetEntityCoords(PlayerPed)
         local Distance = #(myCoords - PlayerCoords)
-        if Distance > 0.3 and Distance < 15 then
+        if Distance > - 0.3 and Distance < 15 then
             local CloseCharacter = VORPcore.getUser(v).getUsedCharacter
             local CloseName = CloseCharacter.firstname .. ' ' .. CloseCharacter.lastname
-            local PlayerData = { Name = CloseName, ServerID = ServerID }
+            local PlayerData = { Name = CloseName, ServerID = v }
             table.insert(ClosestCharacters,PlayerData)
         end
     end
