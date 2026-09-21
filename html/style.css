@@ -1,0 +1,433 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: none;
+    justify-content: right;
+    align-items: center;
+    margin-right: 150px;
+    height: 100vh;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+
+/* ===================================================== */
+/* GEMEINSAME CONTAINER-BASIS                             */
+/* Farben und Grunddesign bleiben wie bisher.             */
+/* ===================================================== */
+
+#container,
+#container2,
+#container3,
+#container4 {
+    background:
+        linear-gradient(
+            180deg,
+            #e4cf9f 0%,
+            #d2b477 100%
+        );
+
+    padding: 30px;
+
+    border: 4px solid #5a3820;
+    border-radius: 10px;
+
+    /* Wichtig für deine JS-Seitenumschaltung */
+    display: none;
+
+    flex-direction: column;
+    gap: 10px;
+
+    width: 400px;
+
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        inset 0 0 15px rgba(80, 45, 20, 0.25),
+        0 8px 25px rgba(0, 0, 0, 0.45);
+}
+
+
+/* ===================================================== */
+/* HAUPTSEITE                                             */
+/* ===================================================== */
+
+#container {
+    /* Falls die Auflösung kleiner ist, bleibt die Seite erreichbar. */
+    max-height: 82vh;
+    overflow-y: auto;
+}
+
+
+/* ===================================================== */
+/* NACHRICHTENLISTE                                       */
+/* ===================================================== */
+
+#container2 {
+    /* Der Container selbst wächst nie über den Bildschirm hinaus. */
+    max-height: 82vh;
+    overflow: hidden;
+
+    /* Nicht vertikal zentrieren, wenn viele Einträge vorhanden sind. */
+    justify-content: flex-start;
+}
+
+
+/* ===================================================== */
+/* EINZELNE NACHRICHT                                     */
+/* ===================================================== */
+
+#container3 {
+    /* Lange Nachrichten dürfen das Notizbuch nicht vergrößern. */
+    max-height: 82vh;
+    overflow: hidden;
+
+    justify-content: flex-start;
+}
+
+/* Der Nachrichtenbereich bekommt den noch verfügbaren Platz. */
+#container3 .message {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+    min-height: 0;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+/* Titel bleibt sichtbar und wird nicht zusammengedrückt. */
+#container3 .message h2 {
+    flex: 0 0 auto;
+}
+
+/* Nur der eigentliche Nachrichtentext scrollt. */
+#container3 .message p {
+    flex: 1 1 auto;
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    max-height: 52vh;
+
+    box-sizing: border-box;
+}
+
+/* Aktionsbuttons unter der Nachricht bleiben immer sichtbar. */
+#container3 > button {
+    flex: 0 0 auto;
+}
+
+
+/* ===================================================== */
+/* LISTE DER SPIELER FÜR DIE WEITERGABE                   */
+/* ===================================================== */
+
+#container4 {
+    /* Auch viele Spieler-Buttons dürfen nicht aus dem Bildschirm laufen. */
+    max-height: 82vh;
+    overflow-y: auto;
+
+    justify-content: flex-start;
+}
+
+
+/* ===================================================== */
+/* ÜBERSCHRIFTEN                                          */
+/* ===================================================== */
+
+h1,
+h2 {
+    color: #4b2e19;
+    text-align: center;
+
+    margin-top: 0;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    letter-spacing: 1px;
+
+    text-shadow:
+        1px 1px 0 rgba(255, 240, 200, 0.5);
+}
+
+
+h1 {
+    width: 100%;
+
+    padding-bottom: 10px;
+
+    border-bottom: 2px solid rgba(75, 46, 25, 0.35);
+}
+
+
+h2 {
+    width: 100%;
+
+    padding-bottom: 8px;
+
+    border-bottom: 2px solid rgba(75, 46, 25, 0.25);
+}
+
+
+/* ===================================================== */
+/* INPUT                                                  */
+/* ===================================================== */
+
+input {
+    padding: 10px;
+
+    font-size: 16px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    color: #382313;
+
+    background-color: #f4e7c8;
+
+    border: 2px solid #80603c;
+
+    border-radius: 5px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    outline: none;
+
+    box-shadow:
+        inset 0 2px 4px rgba(60, 35, 15, 0.15);
+}
+
+
+input:focus {
+    border-color: #56361f;
+
+    background-color: #faefd5;
+}
+
+
+/* ===================================================== */
+/* TEXTAREA                                               */
+/* ===================================================== */
+
+textarea {
+    padding: 10px;
+
+    font-size: 16px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    color: #382313;
+
+    background-color: #f4e7c8;
+
+    border-radius: 5px;
+
+    border: 2px solid #80603c;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    outline: none;
+
+    resize: none;
+
+    line-height: 1.5;
+
+    box-shadow:
+        inset 0 2px 4px rgba(60, 35, 15, 0.15);
+}
+
+
+textarea:focus {
+    border-color: #56361f;
+
+    background-color: #faefd5;
+}
+
+
+/* ===================================================== */
+/* BUTTONS                                                */
+/* ===================================================== */
+
+button {
+    padding: 10px;
+
+    font-size: 16px;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+
+    border: 2px solid #3b2415;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    color: #f5e7c8;
+
+    background:
+        linear-gradient(
+            180deg,
+            #81552f 0%,
+            #59361f 100%
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 240, 210, 0.2),
+        0 3px 5px rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.1s ease,
+        filter 0.1s ease;
+}
+
+
+button:hover {
+    filter: brightness(1.15);
+
+    transform: translateY(-1px);
+}
+
+
+button:active {
+    transform: translateY(1px);
+}
+
+
+/* ===================================================== */
+/* NACHRICHTENLISTE                                       */
+/* ===================================================== */
+
+#nachrichtenContainer {
+    width: 100%;
+
+    /* Der Nachrichtenbereich nutzt den verfügbaren Platz. */
+    flex: 1 1 auto;
+    min-height: 0;
+
+    /* Keine feste 300px-Grenze mehr. Bei vielen Nachrichten scrollt nur die Liste. */
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    box-sizing: border-box;
+
+    padding-right: 4px;
+}
+
+
+/* Dynamisch erzeugte Nachricht */
+
+#nachrichtenContainer .message {
+    width: 100%;
+
+    /* Einträge behalten ihre normale Höhe und werden nicht zusammengedrückt. */
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    padding: 8px;
+
+    border: 1px solid rgba(75, 46, 25, 0.35);
+
+    border-radius: 5px;
+
+    background-color: rgba(245, 229, 195, 0.5);
+}
+
+
+/* ===================================================== */
+/* NACHRICHTENTEXT                                        */
+/* ===================================================== */
+
+p {
+    margin: 0;
+
+    padding: 12px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+    font-weight: normal;
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    background-color: #f4e7c8;
+
+    color: #382313;
+
+    border: 1px solid #80603c;
+
+    border-radius: 5px;
+
+    white-space: pre-wrap;
+
+    /* Sehr lange Wörter/Links können den Container nicht verbreitern. */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* ===================================================== */
+/* SCROLLBARS                                             */
+/* ===================================================== */
+
+#nachrichtenContainer::-webkit-scrollbar,
+#container3 .message p::-webkit-scrollbar,
+#container4::-webkit-scrollbar,
+#container::-webkit-scrollbar {
+    width: 8px;
+}
+
+
+#nachrichtenContainer::-webkit-scrollbar-track,
+#container3 .message p::-webkit-scrollbar-track,
+#container4::-webkit-scrollbar-track,
+#container::-webkit-scrollbar-track {
+    background-color: rgba(75, 46, 25, 0.15);
+
+    border-radius: 5px;
+}
+
+
+#nachrichtenContainer::-webkit-scrollbar-thumb,
+#container3 .message p::-webkit-scrollbar-thumb,
+#container4::-webkit-scrollbar-thumb,
+#container::-webkit-scrollbar-thumb {
+    background-color: #765034;
+
+    border-radius: 5px;
+}
+
+
+#nachrichtenContainer::-webkit-scrollbar-thumb:hover,
+#container3 .message p::-webkit-scrollbar-thumb:hover,
+#container4::-webkit-scrollbar-thumb:hover,
+#container::-webkit-scrollbar-thumb:hover {
+    background-color: #56361f;
+}
