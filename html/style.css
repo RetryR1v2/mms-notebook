@@ -18,7 +18,8 @@ body {
 #container,
 #container2,
 #container3,
-#container4 {
+#container4,
+#container5 {
     background:
         linear-gradient(
             180deg,
@@ -429,5 +430,124 @@ p {
 #container3 .message p::-webkit-scrollbar-thumb:hover,
 #container4::-webkit-scrollbar-thumb:hover,
 #container::-webkit-scrollbar-thumb:hover {
+    background-color: #56361f;
+}
+
+
+/* ===================================================== */
+/* STATUSLEISTE                                           */
+/* ===================================================== */
+
+#statusText {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 2px;
+    padding: 9px 12px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.35;
+    text-align: center;
+
+    color: #4b2e19;
+    background-color: rgba(244, 231, 200, 0.9);
+
+    border: 1px solid rgba(75, 46, 25, 0.4);
+    border-radius: 5px;
+
+    box-shadow:
+        inset 0 1px 3px rgba(60, 35, 15, 0.12),
+        0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Ist kein Statustext vorhanden, nimmt die Leiste keinen Platz ein. */
+#statusText:empty {
+    display: none;
+}
+
+
+/* ===================================================== */
+/* SPIELERLISTE / NACHRICHT WEITERGEBEN                  */
+/* ===================================================== */
+
+#container4 {
+    /* Viele Spieler erzeugen weiterhin eine scrollbare Liste. */
+    max-height: 82vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    justify-content: flex-start;
+}
+
+/* Die dynamisch erzeugten Spieler-Buttons dürfen bei vielen Einträgen
+   nicht zusammengedrückt werden. */
+#container4 > button {
+    flex: 0 0 auto;
+}
+
+
+/* ===================================================== */
+/* NACHRICHT BEARBEITEN                                   */
+/* ===================================================== */
+
+#container5 {
+    /* Gleiche maximale Höhe wie die anderen Seiten. */
+    max-height: 82vh;
+
+    /* Fallback bei sehr kleiner Bildschirmhöhe. */
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    justify-content: flex-start;
+}
+
+#container5 h2,
+#container5 input,
+#container5 > button {
+    flex: 0 0 auto;
+}
+
+/* Der Bearbeitungstext darf lang sein, ohne den Container endlos
+   nach unten zu vergrößern. */
+#container5 textarea {
+    width: 100%;
+
+    min-height: 180px;
+    max-height: 42vh;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    flex: 1 1 auto;
+
+    box-sizing: border-box;
+}
+
+
+/* ===================================================== */
+/* SCROLLBARS DER NEUEN ELEMENTE                         */
+/* ===================================================== */
+
+#container5::-webkit-scrollbar,
+#container5 textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+#container5::-webkit-scrollbar-track,
+#container5 textarea::-webkit-scrollbar-track {
+    background-color: rgba(75, 46, 25, 0.15);
+    border-radius: 5px;
+}
+
+#container5::-webkit-scrollbar-thumb,
+#container5 textarea::-webkit-scrollbar-thumb {
+    background-color: #765034;
+    border-radius: 5px;
+}
+
+#container5::-webkit-scrollbar-thumb:hover,
+#container5 textarea::-webkit-scrollbar-thumb:hover {
     background-color: #56361f;
 }

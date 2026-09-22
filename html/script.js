@@ -10,23 +10,56 @@ const containerNachrichten = document.getElementById("nachrichtenContainer");
 const containerNachrichtByID = document.getElementById("container3");
 const statusText = document.getElementById("statusText");
 const containerClosePlayers = document.getElementById("container4");
+const containerEditMessage = document.getElementById("container5");
 
-// Listeners
+// Load Translations
 
-buttonSend.addEventListener("click", function () {
-    sendText()
-});
+let Translation = {};
 
-buttonPage1.addEventListener("click", function () {
-    document.getElementById("container").style.display = "flex";
-    document.getElementById("container2").style.display = "none";
-});
+async function loadTranslation() {
+    const getLang = await fetch(`https://${GetParentResourceName()}/getLang`, {
+           method: "POST",
 
-buttonPage2.addEventListener("click", function () {
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+    });
+        
+    const lang = await getLang.json()
+        
+    if (lang.success) {
+        const response = await fetch(`locales/${lang.lang}.json`);
+        Translation = await response.json();
+        
+        document.querySelectorAll("[data-i18n]").forEach(function(element) {
+            const key = element.getAttribute("data-i18n");
+            element.innerText = Translation[key];
+        });
 
-    openPageMyMessages()
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(function(element) {
+            const key = element.getAttribute("data-i18n-placeholder");
+            element.placeholder = Translation[key];
+        });
+    } else {
+        const response = await fetch(`locales/de.json`);
+        Translation = await response.json();
 
-});
+        document.querySelectorAll("[data-i18n]").forEach(function(element) {
+            const key = element.getAttribute("data-i18n");
+            element.innerText = Translation[key];
+        });
+
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(function(element) {
+            const key = element.getAttribute("data-i18n-placeholder");
+            element.placeholder = Translation[key];
+        });
+    }
+
+}
+
+loadTranslation();
+
 
 async function openPageMyMessages() {
     try {
@@ -69,13 +102,13 @@ async function openPageMyMessages() {
             document.getElementById("container").style.display = "flex";
             document.getElementById("container2").style.display = "none";
             document.getElementById("container3").style.display = "none";
-            statusText.textContent = "Du hast keine Einträge."
+            statusText.textContent = Translation.no_entrys
             await wait(5000);
             statusText.textContent = ""
         }
 
     } catch (error) {
-        console.error("Error sending message:", error);
+        console.error(Translation.status_error, error);
     }
 }
 
@@ -110,7 +143,7 @@ async function giveMessageToPlayer(id) {
                 });
 
                 const button2 = document.createElement("button");
-                button2.innerText = 'Zurück';
+                button2.innerText = Translation.button_back;
 
                 button2.addEventListener("click", function () {
                     document.getElementById("container4").style.display = "none";
@@ -129,7 +162,7 @@ async function giveMessageToPlayer(id) {
             document.getElementById("container2").style.display = "none";
             document.getElementById("container3").style.display = "none";
             document.getElementById("container4").style.display = "none";
-            statusText.textContent = "Keine Spieler in der nähe."
+            statusText.textContent = Translation.no_near_players
             await wait(5000);
             statusText.textContent = ""
         }
@@ -162,7 +195,7 @@ async function giveMessage(messageID,name,charID) {
             document.getElementById("container2").style.display = "none";
             document.getElementById("container3").style.display = "none";
             document.getElementById("container4").style.display = "none";
-            statusText.textContent = `Nachricht an ${name} weitergegeben.`
+            statusText.textContent = `${Translation.message_to} ${name} ${Translation.message_to2}`
         await wait(5000);
             statusText.textContent = ""
         }else {
@@ -170,7 +203,7 @@ async function giveMessage(messageID,name,charID) {
             document.getElementById("container2").style.display = "none";
             document.getElementById("container3").style.display = "none";
             document.getElementById("container4").style.display = "none";
-            statusText.textContent = "Weitergabe nicht möglich!."
+            statusText.textContent = Translation.cant_message_to
             await wait(5000);
             statusText.textContent = ""
         }
@@ -191,42 +224,92 @@ async function openMessage(id, title, message) {
     messageElement.innerHTML = `<h2>${title}</h2><p>${message}</p>`;
 
     const button = document.createElement("button");
-    button.innerText = 'Nachricht Weitergeben';
+    button.innerText = Translation.edit_message_button;
 
     button.addEventListener("click", function () {
-        giveMessageToPlayer(id)
+        
+        editMessage(id, title, message)
+
     });
 
     const button2 = document.createElement("button");
-    button2.innerText = 'Nachricht Löschen';
+    button2.innerText = Translation.give_message_button;
 
     button2.addEventListener("click", function () {
-        deleteMessageFromDB(id)
+        giveMessageToPlayer(id)
     });
 
     const button3 = document.createElement("button");
-    button3.innerText = 'Zurück';
+    button3.innerText = Translation.delete_message_button;
 
     button3.addEventListener("click", function () {
+        deleteMessageFromDB(id)
+    });
+
+    const button4 = document.createElement("button");
+    button4.innerText = Translation.button_back;
+
+    button4.addEventListener("click", function () {
         document.getElementById("container3").style.display = "none";
         document.getElementById("container2").style.display = "flex";
     });
 
-    const button4 = document.createElement("button");
-    button4.innerText = 'Schließen';
-
-    button4.addEventListener("click", function () {
-        closeMenu();
-    });
 
     containerNachrichtByID.appendChild(messageElement);
     containerNachrichtByID.appendChild(button);
     containerNachrichtByID.appendChild(button2);
     containerNachrichtByID.appendChild(button3);
+    containerNachrichtByID.appendChild(button4);
 
     document.getElementById("container2").style.display = "none";
     document.getElementById("container3").style.display = "flex";
 
+}
+
+async function editMessage(id, title, message) {
+    try {
+        containerEditMessage.innerHTML = "";
+
+        const head1 = document.createElement("h2");
+        head1.innerText = Translation.head_edit_message_button;
+
+        const inputArea = document.createElement("input");
+        inputArea.type = 'text';
+        inputArea.value = title;
+
+        const textArea = document.createElement("textarea");
+        textArea.rows = '10';
+        textArea.cols = '50';
+        textArea.value = message;
+
+        const button = document.createElement("button");
+        button.innerText = Translation.save_message_button;
+
+        const button2 = document.createElement("button");
+        button2.innerText = Translation.button_back;
+
+        button.addEventListener("click", function () {
+            saveEditedMessage(id, inputArea.value, textArea.value)
+        });
+
+        button2.addEventListener("click", function () {
+            document.getElementById("container3").style.display = "flex";
+            document.getElementById("container5").style.display = "none";
+        });
+
+        containerEditMessage.appendChild(head1);
+        containerEditMessage.appendChild(inputArea);
+        containerEditMessage.appendChild(textArea); 
+        containerEditMessage.appendChild(button);
+        containerEditMessage.appendChild(button2);
+
+
+        document.getElementById("container3").style.display = "none";
+        document.getElementById("container5").style.display = "flex";
+
+    } catch (error) {
+            console.error("Error sending message:", error);
+    }
 }
 
 async function deleteMessageFromDB(id) {
@@ -249,6 +332,43 @@ async function deleteMessageFromDB(id) {
             document.getElementById("container3").style.display = "none";
             openPageMyMessages()
         } else {
+            console.log('Error in Lua Code Ask Developer');
+        }
+        
+
+    } catch (error) {
+            console.error("Error sending message:", error);
+    }
+}
+
+async function saveEditedMessage(id, title, message) {
+    try {
+        const response = await fetch(`https://${GetParentResourceName()}/saveEditedMessage`, {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                id: id,
+                title: title,
+                message: message,
+            })
+        });
+            
+        const getCallback = await response.json()
+
+        if (getCallback.success) {
+            document.getElementById("container").style.display = "flex";
+            document.getElementById("container2").style.display = "none";
+            document.getElementById("container3").style.display = "none";
+            document.getElementById("container4").style.display = "none";
+            document.getElementById("container5").style.display = "none";
+            statusText.textContent = Translation.message_edited_successfully
+            await wait(5000);
+            statusText.textContent = ""
+        } else {
             console.log('Fehler in Lua entdeckt');
         }
         
@@ -257,6 +377,21 @@ async function deleteMessageFromDB(id) {
             console.error("Error sending message:", error);
     }
 }
+
+// Listeners
+
+buttonSend.addEventListener("click", function () {
+    sendText()
+});
+
+buttonPage1.addEventListener("click", function () {
+    document.getElementById("container").style.display = "flex";
+    document.getElementById("container2").style.display = "none";
+});
+
+buttonPage2.addEventListener("click", function () {
+    openPageMyMessages()
+});
 
 buttonClose.addEventListener("click", function () {
     closeMenu();
@@ -282,26 +417,32 @@ document.addEventListener("keydown", (event) => {
 
 async function sendText() {
     try {
-        const response = await fetch(`https://${GetParentResourceName()}/sendMessage`, {
-            method: "POST",
+        if (inputTitle.value.trim() !== "" && inputMessage.value.trim() !== ""){
+            const response = await fetch(`https://${GetParentResourceName()}/sendMessage`, {
+                method: "POST",
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            body: JSON.stringify({
-                title: inputTitle.value,
-                message: inputMessage.value,
-            })
-        });
-        
-        const data = await response.json()
+                body: JSON.stringify({
+                    title: inputTitle.value,
+                    message: inputMessage.value,
+                })
+            });
+            
+            const data = await response.json()
 
-        if (data.success) {
-            inputTitle.value = "";
-            inputMessage.value = "";
+            if (data.success) {
+                inputTitle.value = "";
+                inputMessage.value = "";
+            } else {
+                console.error("Failed to send message:");
+            }
         } else {
-            console.error("Failed to send message:");
+            statusText.textContent = Translation.fill_all_fields
+            await wait(5000);
+            statusText.textContent = ""
         }
 
     } catch (error) {
@@ -310,15 +451,22 @@ async function sendText() {
 };
 
 async function closeMenu() {
-    fetch(`https://${GetParentResourceName()}/close`, {
-        method: "POST",
+    try {
+        const response = await fetch(`https://${GetParentResourceName()}/close`, {
+            method: "POST",
 
-        headers: {
-            "Content-Type": "application/json"
-        },
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-        body: JSON.stringify({})
-    })
+            body: JSON.stringify({})
+        });
+        
+        const data = await response.json()
+
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
 }
 
 window.addEventListener("message", function (event) {
@@ -334,4 +482,3 @@ window.addEventListener("message", function (event) {
         document.body.style.display = "none";
     }
 });
-

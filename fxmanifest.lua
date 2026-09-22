@@ -5,7 +5,7 @@ game 'rdr3'
 author 'Markus Mueller'
 description 'MMS-Notebook'
 
-version '1.0.0'
+version '1.1.2'
 vorp_checker 'yes'
 vorp_name '^5MMS-Notebook ^4Version Check^3'
 vorp_github 'https://github.com/RetryR1v2/mms-notebook'
@@ -21,8 +21,6 @@ server_scripts {
 
 shared_scripts {
     'config.lua',
-	--'shared/locale.lua',
-	--'languages/*.lua',
 }
 
 
@@ -31,5 +29,6 @@ ui_page 'html/index.html'
 files {
     'html/index.html',
     'html/style.css',
-    'html/script.js'
+    'html/script.js',
+	'html/locales/*'
 }

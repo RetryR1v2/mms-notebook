@@ -9,27 +9,30 @@
 
     <body>
         <div id="container">
-            <h1>Notizbuch</h1>
+            <h1 data-i18n="notebook_title">Notizbuch</h1>
                 
-            <button id="buttonPage2">Meine Einträge</button>
-            <input type="text" id="inputTitle" placeholder="Titel eingeben...">
-            <textarea name="nachricht" id="inputMessage" rows="10" cols="50" placeholder="Nachricht eingeben..."></textarea>
-            <button id="buttonReset">Zurücksetzen</button>
-            <button id="buttonSend">Eintrag Speichern</button>
-            <button id="buttonClose">Schließen</button>
+            <button id="buttonPage2" data-i18n="my_messages"></button>
+            <input type="text" id="inputTitle" placeholder="Titel eingeben..."data-i18n-placeholder="main_page_placeholder_input"></input>
+            <textarea name="nachricht" id="inputMessage" rows="10" cols="50" placeholder="Nachricht eingeben..." data-i18n-placeholder="main_page_placeholder_textarea"></textarea>
+            <button id="buttonReset" data-i18n="main_page_reset_button"></button>
+            <button id="buttonSend" data-i18n="main_page_save_message"></button>
+            <button id="buttonClose" data-i18n="main_page_close_button"></button>
             <div id="statusText"></div>
         </div>
         <div id="container2">
-            <h2>Meine Nachrichten</h2>
+            <h2 data-i18n="my_messages_title"></h2>
             <div id="nachrichtenContainer"></div>
-            <button id="buttonPage1">Zurück</button>
-            <button id="buttonClose2">Schließen</button>
+            <button id="buttonPage1" data-i18n="main_page_back_button"></button>
+            <button id="buttonClose2" data-i18n="main_page_close_button"></button>
         </div>
         <div id="container3">
             
         </div>
         <div id="container4">
             
+        </div>
+        <div id="container5">
+
         </div>
         <script src="script.js"></script>
     </body>

@@ -58,8 +58,7 @@ vorpCore.Callback.Register('giveMessageToPlayer', function(source,cb,id)
         local Name = Chars.firstname .. ' ' .. Chars.lastname
         local charID = Chars.charIdentifier
         UserData = {name = Name, charID = charID}
-        --if Distance > 0.1 and Distance < 5.0 then
-        if Distance < 5.0 then
+        if Distance > 0.1 and Distance < 5.0 then
             table.insert(CloseUsers, UserData)
         end
     end
@@ -81,4 +80,17 @@ vorpCore.Callback.Register('giveFinalMessageToPlayer', function(source,cb,id,cha
         end
     end)
 
+end)
+
+vorpCore.Callback.Register('editMessage', function(source,cb,id,title,message)
+    local src = source
+    MySQL.query('SELECT * FROM mms_notebook WHERE id = ?', {id}, function(result)
+        if result ~= nil then
+            MySQL.update('UPDATE `mms_notebook` SET title = ? WHERE id = ?',{title, id})
+            MySQL.update('UPDATE `mms_notebook` SET message = ? WHERE id = ?',{message, id})
+            cb ({success = true})
+        else
+            cb ({success = false})
+        end
+    end)
 end)

@@ -6,11 +6,20 @@
 
 - Create Notes
 - Give Notes to Players
+- Edit Note
 - Delete Note
 
 # Changelog
 
-- Initial Release Version 1.1.0
+<1.1.2>
+- Added Animation 
+- Improved Fuction
+- Fixed Minor Bug
+<1.1.1>
+- Updated Nui 
+- You can now edit Messages
+<1.1.0>
+- Initial Release
 
 # installation 
 
