@@ -8,6 +8,7 @@
 - Give Notes to Players
 - Edit Note
 - Delete Note
+- Language Support de,en,es,ru,pl,tr,ro,fr
 
 # Changelog
 
