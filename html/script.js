@@ -128,7 +128,6 @@ async function giveMessageToPlayer(id) {
         
         const closePlayers = await response.json()
 
-        console.log(closePlayers.success)
         if (closePlayers.success) {
 
             containerClosePlayers.innerHTML = "";
